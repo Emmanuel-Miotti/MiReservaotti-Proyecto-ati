@@ -1,0 +1,218 @@
+/* -----------------------------------------en Reservar Cita----------------------------------- */
+
+.service-card {
+  cursor: pointer;
+  border: 1px solid #ddd;
+  transition: transform 0.2s ease-in-out;
+}
+
+.service-card:hover {
+  transform: scale(1.05);
+}
+
+.service-card.selected {
+  border: 2px solid #28a745;
+  background-color: #e9f5ff;
+}
+
+.btn-available {
+  background-color: #f8f9fa;
+  color: #000;
+}
+
+.btn-selected {
+  background-color: #28a745;
+  color: #fff;
+}
+
+/* .custom-datepicker {
+  width: 100%;
+}
+
+.custom-calendar {
+  width: 100%;
+} */
+
+.containerReserva {
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+}
+
+/* Header Card Styling */
+.header-card {
+  /* background-color: #606060; */
+  color: white;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* Button Group Styling */
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Datepicker Styling */
+.custom-datepicker {
+  width: 100%;
+}
+
+.custom-calendar .react-datepicker__day--selected,
+.custom-calendar .react-datepicker__day--keyboard-selected {
+  background-color: #28a745;
+  color: white;
+}
+
+.custom-calendar .react-datepicker__day--no-available {
+  background-color: #ffcccc;
+}
+
+/* Service Card Styling */
+.service-card {
+  cursor: pointer;
+}
+
+.service-card.selected {
+  border: 2px solid #28a745;
+}
+
+/* Button Styling */
+.btn-selected {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-available {
+  background-color: #f0f0f0;
+  color: black;
+}
+
+/* Step Number Styling */
+.step-number {
+  background-color: #28a745;
+  color: white;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+  text-align: center;
+  margin-right: 10px;
+}
+
+/* Total Info Styling */
+.total-info {
+  font-size: 1.5rem;
+  margin-top: 20px;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .header-card {
+    text-align: center;
+  }
+
+  .button-group {
+    flex-direction: column;
+  }
+
+  .button-group button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .custom-datepicker {
+    width: 100%;
+  }
+
+  .text-right {
+    text-align: center;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .containercss {
+    padding: 1rem;
+  }
+
+  .header-card {
+    padding: 10px;
+  }
+
+  .button-group button {
+    margin-bottom: 5px;
+  }
+}
+
+
+
+
+/*-------------------------------------- En PanelAdmin----------------------------------- */
+.cardAdmin {
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+  }
+  
+  .cardAdmin h3 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #11998e;
+    /* margin-bottom: 0.5rem; */
+  }
+  
+  .cardAdmin p {
+    font-size: 1rem;
+    color: #34434D;
+    /* margin-bottom: 0.5rem; */
+  }
+  
+  .cardAdmin hr {
+    /* margin: 1rem 0; */
+    border: none;
+    border-top: 1px solid #000000;
+  }
+  
+  .cardAdmin button {
+    font-size: 1rem;
+    /* padding: 0.75rem 1.5rem; */
+    border: none;
+    border-radius: 5px;
+    background-color: #11998e;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cardAdmin button:hover {
+    background-color: #38ef7d;
+  }
+  
+  .selectBuscar{
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+    margin: 0.5rem;
+    padding-right: 180px;
+  }
+  
+  .perfil-empresa{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem;
+  }
+
+/* ---------------------------- Calificaciones en VEREMPRESA -------------- */

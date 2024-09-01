@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My React App</title>
+  <!-- Meta tag for CSRF token -->
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+</head>
+<body>
+  <div id="root"></div>
+  <!-- Your bundled JavaScript file -->
+  <script src="bundle.js"></script>
+</body>
+</html>

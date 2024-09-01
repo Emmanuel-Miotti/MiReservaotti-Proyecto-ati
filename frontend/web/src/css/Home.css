@@ -1,0 +1,219 @@
+/* General Styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f8f9fa;
+  color: #343a40;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container */
+.containercss {
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+}
+.cardPlanes {
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cardPlanes:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.homeCol {
+  display: flex;
+  justify-content: right;
+  align-items: right;
+  /* height: 100vh; */
+  padding-left: 2rem;
+
+}
+
+/* Header */
+h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  /* color: #34434D; */
+  color: #333333;
+}
+
+.LogoCss{
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333333;
+
+}
+
+/* Plan Columns */
+.row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.col {
+  flex: 1;
+  padding: 1rem;
+  /* margin: 1rem; */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.col:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Plan titulo */
+h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #495057;
+  margin-bottom: 1rem;
+
+}
+
+/* Plan Details */
+p {
+  font-size: 1rem;
+
+  margin: 0.5rem 0;
+  color: #5b6268 ;
+}
+
+
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+ul li {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+  color: #6c757d;
+}
+
+/* Button */
+button {
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 50px;
+  background-color: #38ef7d;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #38ef7d;
+}
+  /* -------------------------------------- En Imagen de home----------------------------------- */
+  .containerHomeImg {
+    width: 100%;
+    height: 100vh; /* Esto establece la altura del contenedor como el 100% de la altura de la ventana */
+    /* background-image: url('https://via.placeholder.com/150'); */
+    background-size: cover; /* Esto hace que el fondo cubra todo el contenedor */
+    background-repeat: no-repeat; /* Esto evita que el fondo se repita */
+  
+  
+  }
+
+
+  /* -------------------------------------- CALENDARIO ----------------------------------- */
+  .custom-datepicker .react-datepicker__month-container {
+    width: 100%;
+    max-width: 1000px; /* Ajusta el tamaño del calendario aquí */ 
+  }
+  
+  .custom-calendar .react-datepicker__day--selected {
+    background-color: green !important;
+    border-color: green !important;
+  }
+  
+  .custom-calendar .react-datepicker__day--keyboard-selected {
+    background-color: green !important;
+    border-color: green !important;
+  }
+
+  .btn-available {
+    background-color: green;
+    color: white;
+  }
+  
+
+/* ---------------------------- Calificaciones en VEREMPRESA -------------- */
+.star-rating .fa {
+  font-size: 2em; 
+}
+
+.star-rating .fa-star-o {
+  color: #ccc; 
+}
+
+.comment-box {
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.comment-box img {
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.comment-box .comment-content {
+  flex: 1;
+}
+
+.comment-box .comment-rating {
+  display: flex;
+  align-items: center;
+}
+
+.comment-box .comment-rating  {
+  font-size: 1.5em;
+  color: #ffcc00; /* Color de las estrellas */
+}
+
+.comment-box .comment-rating strong {
+  color: #5a5a5a; 
+}
+
+.comment-box .comment-text {
+  margin-top: 5px;
+  color: #000000;
+}
+
+@media (max-width: 768px) {
+  .comment-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .comment-box img {
+    margin-bottom: 10px;
+  }
+
+  .comment-box .comment-rating {
+    margin-bottom: 5px;
+  }
+}
+
+
+

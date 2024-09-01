@@ -1,0 +1,54 @@
+
+/* Primario (Verde): #38ef7d
+Secundario (Verde Oscuro): #11998e
+Terciario (Azul Claro): #74c0fc
+Fondo Claro: #f1f1f1
+Texto Oscuro: #34434D
+Texto Claro: #ffffff
+Gris (para bordes y elementos de separación): #CED4DA 
+
+h1: #34434D (Gris oscuro) 34434D
+h2: #495057 (Gris medio)
+h3: #6c757d (Gris claro)
+h4: #adb5bd (Gris más claro)
+h5: #ced4da (Gris muy claro)
+h6: #dee2e6 (Gris extremadamente claro)
+
+Fondo Claro: #f1f1f1 (Gris claro)
+Fondo Oscuro: #34434D (Gris oscuro para contrastar)
+Botón Primario (Relleno): Degradado de verde claro a verde oscuro: linear-gradient(45deg, #11998e, #38ef7d)
+Botón Secundario (Sin Relleno): Borde verde oscuro: #11998e, Texto Verde Claro: #38ef7d
+
+
+*/
+
+
+/* Navbar.css */
+
+
+
+@media (max-width: 991.98px) {
+    .navbar-nav {
+        margin-left: auto;
+    }
+}
+/* Color del fondo del navbar */
+.navbar {
+    background-color: #ffffff;
+}
+/* container Navbar */
+.containerNavbar{
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    margin-bottom: 1rem;
+  }
+
+  footer .containercss {
+    color: #000000;
+    padding: 1rem;
+    margin-top: 10%;
+
+  }
+
