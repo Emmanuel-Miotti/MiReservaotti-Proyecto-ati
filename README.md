@@ -9,7 +9,7 @@ php artisan db:seed</br> // precarga php artisan db:seed --class=ProductosSeeder
 php artisan serve</br>
 //Frontend React WEB</br>
 cd frontend/web </br>
-npm install</br>
+npm install o npm install --force</br>
 npm start</br>
 //Fronten React Native APP </br>
 cd frontend-app </br>
