@@ -6,65 +6,92 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Picker,
+  ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import axios from "axios";
-import { UserContext } from "../../contexts/UserContext";
+import { UserContext } from "../../contexts/UserContext"; // Importa el UserContext correctamente
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import BotonCancelar from "../components/BotonCancelar";
 import Config from "../Config";
 
 const EditEmpresaScreen = ({ navigation }) => {
-  const user = useContext(UserContext).user;
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [cellphone, setCellphone] = useState("");
-  const [address, setAddress] = useState(""); // Campo de dirección agregado
+  const { user, setUser } = useContext(UserContext);  // Extrae correctamente user y setUser
+  const [name, setName] = useState(user.name || "");
+  const [email, setEmail] = useState(user.email || "");
+  const [cellphone, setCellphone] = useState(user.cellphone || "");
+  const [address, setAddress] = useState(user.address || "");
+  const [categoria_id, setCategory] = useState(user.categoria_id || "");
+  const [departamento_id, setDepartamentoId] = useState(user.departamento_id || "");
+  const [ciudad_id, setCiudadId] = useState(user.ciudad_id || "");
+  const [departamentos, setDepartamentos] = useState([]);
+  const [ciudades, setCiudades] = useState([]);
+  const [categorias, setCategorias] = useState({});
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  // Cargar datos de la empresa al montar el componente
   useEffect(() => {
-    const fetchEmpresaData = async () => {
-      const token = JSON.parse(await AsyncStorage.getItem("token"));
-      try {
-        const response = await axios.get(
-          `${Config.url()}/empresa/${user.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        // Desestructurar los datos recibidos para asignar a los campos correspondientes
-        const { name, email, cellphone, address } = response.data.data;
-        setName(name);
-        setEmail(email);
-        setCellphone(cellphone);
-        setAddress(address);
-      } catch (error) {
-        console.error("Error al obtener los datos de la empresa:", error);
-        Alert.alert(
-          "Error",
-          "Hubo un problema al cargar los datos de la empresa. Por favor, intenta de nuevo más tarde."
-        );
-      }
-    };
+    fetchDepartamentos();
+    obtenerCategorias();
+    if (departamento_id) {
+      fetchCiudades(departamento_id); 
+    }
+  }, []);
 
-    fetchEmpresaData();
-  }, [user.id]);
+  const fetchDepartamentos = async () => {
+    try {
+      const response = await axios.get(`${Config.url()}/departamentos`);
+      setDepartamentos(response.data);
+    } catch (error) {
+      console.error("Error al cargar los departamentos:", error);
+    }
+  };
 
-  // Manejo de la actualización de los datos
+  const obtenerCategorias = async () => {
+    try {
+      const response = await axios.get(`${Config.url()}/categorias`);
+      const categoriasMap = {};
+      response.data.forEach((cat) => {
+        categoriasMap[cat.id] = cat.name;
+      });
+      setCategorias(categoriasMap);
+    } catch (error) {
+      console.error("Error al cargar categorías:", error);
+    }
+  };
+
+  const fetchCiudades = async (departamentoId) => {
+    try {
+      const response = await axios.get(`${Config.url()}/departamento/ciudades/${departamentoId}`);
+      setCiudades(response.data);
+    } catch (error) {
+      console.error("Error al cargar las ciudades:", error);
+    }
+  };
+
+  const handleDepartamentoChange = (value) => {
+    setDepartamentoId(value);
+    setCiudadId("");
+    fetchCiudades(value);
+  };
+
   const handleEditEmpresa = async () => {
     setErrors({});
+    setLoading(true);
 
     try {
       const token = JSON.parse(await AsyncStorage.getItem("token"));
-      const response = await axios.post(
+      const response = await axios.put(
         `${Config.url()}/empresa/${user.id}`,
         {
           name,
           email,
           cellphone,
-          address, // Enviar la dirección en la solicitud
+          address,
+          categoria_id,
+          departamento_id,
+          ciudad_id,
         },
         {
           headers: {
@@ -72,12 +99,21 @@ const EditEmpresaScreen = ({ navigation }) => {
           },
         }
       );
+
+      console.log(response.data);
+
+      // Actualizar el estado del usuario en UserContext
+      setUser(response.data.empresa); // Asegúrate de que setUser es una función y se llama correctamente
+
       Alert.alert(
         "Empresa actualizada",
         "Los datos de la empresa han sido actualizados correctamente."
       );
+
       navigation.goBack();
+
     } catch (error) {
+      setLoading(false);
       if (error.response && error.response.data && error.response.data.errors) {
         setErrors(error.response.data.errors);
       } else {
@@ -87,6 +123,8 @@ const EditEmpresaScreen = ({ navigation }) => {
           "Hubo un problema al actualizar los datos de la empresa. Por favor, intenta de nuevo más tarde."
         );
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -95,7 +133,7 @@ const EditEmpresaScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Editar Empresa</Text>
       <Text>Modifique solo los datos que quiera editar</Text>
       <TextInput
@@ -133,17 +171,68 @@ const EditEmpresaScreen = ({ navigation }) => {
       {errors.address && (
         <Text style={styles.errorText}>{errors.address[0]}</Text>
       )}
+
+      <Picker
+        selectedValue={categoria_id}
+        style={styles.picker}
+        onValueChange={(itemValue) => setCategory(itemValue)}
+      >
+        <Picker.Item label="Selecciona tu categoría" value="" />
+        {Object.keys(categorias).map((key) => (
+          <Picker.Item key={key} label={categorias[key]} value={key} />
+        ))}
+      </Picker>
+      {errors.categoria_id && (
+        <Text style={styles.errorText}>{errors.categoria_id[0]}</Text>
+      )}
+
+      <Picker
+        selectedValue={departamento_id}
+        style={styles.picker}
+        onValueChange={(itemValue) => handleDepartamentoChange(itemValue)}
+      >
+        <Picker.Item label="Selecciona tu departamento" value="" />
+        {departamentos.map((departamento) => (
+          <Picker.Item
+            key={departamento.id}
+            label={departamento.name}
+            value={departamento.id}
+          />
+        ))}
+      </Picker>
+      {errors.departamento_id && (
+        <Text style={styles.errorText}>{errors.departamento_id[0]}</Text>
+      )}
+
+      <Picker
+        selectedValue={ciudad_id}
+        style={styles.picker}
+        onValueChange={(itemValue) => setCiudadId(itemValue)}
+      >
+        <Picker.Item label="Selecciona tu ciudad" value="" />
+        {ciudades.map((ciudad) => (
+          <Picker.Item key={ciudad.id} label={ciudad.name} value={ciudad.id} />
+        ))}
+      </Picker>
+      {errors.ciudad_id && (
+        <Text style={styles.errorText}>{errors.ciudad_id[0]}</Text>
+      )}
+
       <TouchableOpacity style={styles.button} onPress={handleEditEmpresa}>
-        <Text style={styles.buttonText}>Guardar cambios</Text>
+        {loading ? (
+          <ActivityIndicator size="large" color="#ffffff" />
+        ) : (
+          <Text style={styles.buttonText}>Guardar cambios</Text>
+        )}
       </TouchableOpacity>
       <BotonCancelar onCancel={handleCancel} />
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
@@ -169,6 +258,9 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingVertical: 15,
     paddingHorizontal: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
   },
   buttonText: {
     color: "#ffffff",
@@ -179,9 +271,21 @@ const styles = StyleSheet.create({
     color: "red",
     marginBottom: 10,
   },
+  picker: {
+    height: 50,
+    width: "100%",
+    marginVertical: 10,
+    padding: 15,
+    backgroundColor: "#ffffff",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 25,
+  },
 });
 
 export default EditEmpresaScreen;
+
+
 
 
 // import React, { useContext, useState, useEffect } from "react";

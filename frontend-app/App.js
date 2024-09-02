@@ -32,6 +32,9 @@ import MisReservas from "./screens/screensClient/MisReservas";
 import PerfilCliente from "./screens/screensClient/PerfilCliente";
 import MisFavoritos from "./screens/screensClient/MisFavoritos";
 import comprarProducto from "./screens/screensClient/comprarProducto";
+import ListaEspera from "./screens/screensClient/LIstaEspera";
+import WebViewScreen from "./screens/components/WebView";
+import MisCompras from "./screens/screensClient/MisCompras";
 
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -47,6 +50,7 @@ const PerfilStack = () => {
       <Stack.Screen name="HorariosCrud" component={HorariosCrud} />
       <Stack.Screen name="GestionDeClientes" component={GestionDeClientes} />
       <Stack.Screen name="Login" component={LoginScreen} />
+      
     </Stack.Navigator>
   );
 };
@@ -56,6 +60,7 @@ const PerfilStackCliente = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="PerfilCliente" component={PerfilCliente} />
       <Stack.Screen name="EditarCliente" component={EditarCliente} />
+      <Stack.Screen name="MisCompras" component={MisCompras} />
     </Stack.Navigator>
   );
 };
@@ -65,7 +70,6 @@ const PanelAgendaStack = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="PanelAgenda" component={PanelAgenda} />
       <Stack.Screen name="ReservasCRUD" component={ReservasCRUD} />
-      {/* <Stack.Screen name="ReservaCRUD" component={ReservaCRUD} />  */}
     </Stack.Navigator>
   );
 }
@@ -77,6 +81,8 @@ const HomeClienteEmpresas = () => {
       <Stack.Screen name="VerEmpresa" component={VerEmpresa} />
       <Stack.Screen name="Reserva" component={Reserva} />
       <Stack.Screen name="ComprarProducto" component={comprarProducto} />
+      <Stack.Screen name="ListaEspera" component={ListaEspera} />
+      <Stack.Screen name="WebViewScreen" component={WebViewScreen} />
     </Stack.Navigator>
   );
 };
@@ -226,6 +232,7 @@ const AppNavigator = () => {
         />
       )}
     </Drawer.Navigator>
+    
   );
 };
 

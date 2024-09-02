@@ -145,7 +145,10 @@ class ReservaController extends Controller
         // Obtener todas las reservas para la empresa con el ID proporcionado
         $reservas = Reserva::whereHas('agenda', function ($query) use ($empresa_id) {
             $query->where('empresa_id', $empresa_id);
-        })->with('cliente')->get();
+        })->with('cliente')
+            ->orderBy('fecha', 'desc') // Ordenar por fecha en orden descendente
+    ->orderBy('hora', 'desc') // Luego ordenar por hora en orden descendente
+        ->get();
 
 
         $reservas->each(function ($reserva) {
@@ -170,7 +173,10 @@ class ReservaController extends Controller
     // Obtener todas las reservas de usuarios no registrados para la empresa con el ID proporcionado
     $reservasNoRegistradas = ReservasUsuarioNoRegistrado::whereHas('agenda', function ($query) use ($empresa_id) {
         $query->where('empresa_id', $empresa_id);
-    })->get();
+    })
+    ->orderBy('fecha', 'desc') // Ordenar por fecha en orden descendente
+    ->orderBy('hora', 'desc') // Luego ordenar por hora en orden descendente
+    ->get();
 
     // Para cada reserva, deserializar los servicios y obtener sus detalles completos
     $reservasNoRegistradas->each(function ($reserva) {

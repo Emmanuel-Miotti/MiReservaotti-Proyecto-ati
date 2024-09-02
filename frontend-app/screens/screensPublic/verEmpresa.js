@@ -16,6 +16,8 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "../../contexts/UserContext";
 import Icon from "react-native-vector-icons/FontAwesome";
+// import Mapa from "../components/Mapa"; 
+
 
 const VerEmpresa = () => {
   const { user } = useContext(UserContext);
@@ -311,9 +313,11 @@ const VerEmpresa = () => {
 
       <View style={styles.empresaContainer}>
         <Image
-          source={{
-            uri: empresa.perfilUrl || "https://via.placeholder.com/150",
-          }}
+        source={{
+          uri: empresa.profile_picture
+            ? `${Config.urlFoto()}${empresa.profile_picture}`
+            : "https://via.placeholder.com/150",
+        }}
           style={styles.image}
         />
         <View style={styles.infoContainer}>
@@ -395,13 +399,18 @@ const VerEmpresa = () => {
         )}
       </View>
 
-      <View style={styles.section}>
+      {/* <View style={styles.section}>
         <Text style={styles.sectionHeader}>Ubicación</Text>
         <Image
           source={{ uri: "https://via.placeholder.com/600x400" }}
           style={styles.mapImage}
         />
-      </View>
+      </View> */}
+      {/* <View style={styles.section}>
+        <Text style={styles.sectionHeader}>Ubicación</Text>
+        <Mapa <Mapa address={empresa.address || "Dirección no disponible"} />
+ />
+      </View> */}
 
       <View style={styles.section}>
         <Text style={styles.sectionHeader}>Comentarios y Calificaciones</Text>
@@ -409,7 +418,11 @@ const VerEmpresa = () => {
           reviews.map((review) => (
             <View key={review.id} style={styles.commentBox}>
               <Image
-                source={{ uri: "https://via.placeholder.com/50" }}
+                source={{
+          uri: review.cliente.profile_picture
+            ? `${Config.urlFoto()}${review.cliente.profile_picture}`
+            : "https://via.placeholder.com/50",
+        }}
                 style={styles.profileImage}
               />
               <View style={styles.commentContent}>
@@ -649,10 +662,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   reservaButton: {
-    backgroundColor: "#43a047", // Verde cuando está habilitado
+    backgroundColor: "#43a047",
   },
   disabledButton: {
-    backgroundColor: "#cccccc", // Gris cuando está deshabilitado
+    backgroundColor: "#cccccc", 
   },
   buttonText: {
     color: "#fff",

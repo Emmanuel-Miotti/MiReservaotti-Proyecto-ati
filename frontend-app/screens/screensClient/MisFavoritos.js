@@ -1,5 +1,13 @@
 import React, { useContext, useState, useEffect } from "react";
-import { View, Text, Image, TouchableOpacity, FlatList, StyleSheet, RefreshControl } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  RefreshControl,
+} from "react-native";
 import axios from "axios";
 import { UserContext } from "../../contexts/UserContext";
 import { useNavigation } from "@react-navigation/native";
@@ -21,8 +29,8 @@ const Favoritos = () => {
     try {
       const response = await axios.get(`${Config.url()}/favoritos/${user.id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
       // console.log(response.data.data);
       setFavoritos(response.data.data);
@@ -34,15 +42,15 @@ const Favoritos = () => {
   };
 
   const verEmpresa = (empresaId) => {
-    navigation.navigate('VerEmpresa', { empresaId });
+    navigation.navigate("VerEmpresa", { empresaId });
   };
 
   const eliminarFavorito = async (id) => {
     try {
       await axios.delete(`${Config.url()}/favoritos/${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
       obtenerFavoritos();
     } catch (error) {
@@ -53,8 +61,12 @@ const Favoritos = () => {
   const renderFavorito = ({ item }) => (
     <View style={styles.card}>
       <Image
+        source={{
+          uri: item.empresa.profile_picture
+            ? `${Config.urlFoto()}${item.empresa.profile_picture}`
+            : "https://via.placeholder.com/150",
+        }}
         style={styles.image}
-        source={{ uri: item.empresa.perfilUrl || "https://via.placeholder.com/150" }}
       />
       <View style={styles.info}>
         <Text style={styles.title}>{item.empresa.name}</Text>
@@ -62,10 +74,16 @@ const Favoritos = () => {
         <Text style={styles.text}>{item.empresa.cellphone}</Text>
         <Text style={styles.text}>{item.empresa.email}</Text>
         <View style={styles.buttons}>
-          <TouchableOpacity style={styles.viewButton} onPress={() => verEmpresa(item.empresa.id)}>
+          <TouchableOpacity
+            style={styles.viewButton}
+            onPress={() => verEmpresa(item.empresa.id)}
+          >
             <Text style={styles.buttonText}>Ver Empresa</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.deleteButton} onPress={() => eliminarFavorito(item.id)}>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => eliminarFavorito(item.id)}
+          >
             <Text style={styles.buttonText}>Eliminar</Text>
           </TouchableOpacity>
         </View>
@@ -77,7 +95,10 @@ const Favoritos = () => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>Mis Empresas Favoritas</Text>
-        <TouchableOpacity style={styles.refreshButton} onPress={obtenerFavoritos}>
+        <TouchableOpacity
+          style={styles.refreshButton}
+          onPress={obtenerFavoritos}
+        >
           <Icon name="refresh" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
@@ -87,7 +108,10 @@ const Favoritos = () => {
           renderItem={renderFavorito}
           keyExtractor={(item) => item.id.toString()}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={obtenerFavoritos} />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={obtenerFavoritos}
+            />
           }
         />
       ) : (

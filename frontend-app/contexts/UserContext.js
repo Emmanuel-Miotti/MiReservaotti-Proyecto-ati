@@ -33,7 +33,8 @@ export const UserProvider = ({ children }) => {
       console.log("Estamos aca /contexts/UserContext.js");
       await AsyncStorage.setItem("user", JSON.stringify(userData.usuario));
       await AsyncStorage.setItem("token", JSON.stringify(userData.token));
-      setUser(userData);
+      // setUser(userData);
+      setUser(userData.usuario);
         // Redireccionar según el rol del usuario
         if (userData.usuario.role === "empresa") {
           navigation.navigate("HomeEmpresa");
@@ -59,7 +60,7 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ user, login, logout }}>
+    <UserContext.Provider value={{ user, setUser, login, logout }}>
       {children}
     </UserContext.Provider>
   );

@@ -53,8 +53,22 @@ const ReservasCRUD = ({ navigation }) => {
 
   const fetchReservas = async () => {
     try {
-      const response = await axios.get(`${Config.url()}/reservas/empresa/${user.id}`);
-      const todasReservas = response.data.data;
+      // const response = await axios.get(`${Config.url()}/reservas/empresa/${user.id}`);
+      // const todasReservas = response.data.data;
+      const responseReservas = await axios.get(
+        `${Config.url()}/reservas/empresa/${user.id}`
+      );
+      const responseReservasUsuariosNoRegistrados = await axios.get(
+        `${Config.url()}/reservas2/empresa/${user.id}`
+      );
+
+      const todasReservas = [
+        ...responseReservas.data.data,
+        ...responseReservasUsuariosNoRegistrados.data.data,
+      ];
+
+
+      console.log(todasReservas)
 
       const now = moment();
 
@@ -66,6 +80,8 @@ const ReservasCRUD = ({ navigation }) => {
         moment(reserva.fecha + ' ' + reserva.hora).isBefore(now)
       );
 
+      console.log("pendientes")
+      console.log(pendientes)
       setReservasPendientes(pendientes);
       setReservasPasadas(pasadas);
 
@@ -206,23 +222,23 @@ const ReservasCRUD = ({ navigation }) => {
     <View style={styles.container}>
       <BotonVolver onBack={handleBack} />
       <ScrollView>
-        <Button title="Agregar Reserva sin Cliente" onPress={handleAddWithoutClient} color="#6c757d" />
+        {/* <Button title="Agregar Reserva sin Cliente" onPress={handleAddWithoutClient} color="#6c757d" /> */}
 
         <Text style={styles.sectionTitle}>Reservas Pendientes</Text>
         {reservasPendientes.map((reserva) => (
           <View key={reserva.id} style={styles.reservaContainer}>
-            <Text>ID: {reserva.id}</Text>
-            <Text>Cliente: {reserva.cliente_id || "Sin cliente"}</Text>
-            <Text>Agenda: {reserva.agenda_id}</Text>
+            {/* <Text>ID: {reserva.id}</Text> */}
+            <Text>Cliente: {reserva.cliente ? reserva.cliente.name : reserva.nombre_cliente}</Text>
+            {/* <Text>Agenda: {reserva.agenda_id}</Text> */}
             <Text>Fecha: {reserva.fecha}</Text>
             <Text>Hora: {reserva.hora}</Text>
             <Text>Duración: {reserva.duracion} min</Text>
             <Text>Precio: ${reserva.precio}</Text>
             <Text>Estado: {reserva.estado}</Text>
             <View style={styles.buttonContainer}>
-              <Button title="Editar" onPress={() => handleEdit(reserva)} />
+             <Button title="Editar" /*  onPress={() => handleEdit(reserva)} */ />
               {reserva.estado !== 'cancelado' && (
-                <Button title="Cancelar Reserva" onPress={() => handleCancel(reserva.id)} color="red" />
+                <Button title="Cancelar Reserva"  /* onPress={() => handleCancel(reserva.id)}*/ color="red" />
               )}
             </View>
           </View>
@@ -231,9 +247,10 @@ const ReservasCRUD = ({ navigation }) => {
         <Text style={styles.sectionTitle}>Reservas Pasadas</Text>
         {reservasPasadas.map((reserva) => (
           <View key={reserva.id} style={styles.reservaContainer}>
-            <Text>ID: {reserva.id}</Text>
-            <Text>Cliente: {reserva.cliente_id || "Sin cliente"}</Text>
-            <Text>Agenda: {reserva.agenda_id}</Text>
+            {/* <Text>ID: {reserva.id}</Text> */}
+            {/* <Text>Cliente: {reserva.cliente_id || "Sin cliente"}</Text> */}
+            <Text>Cliente: {reserva.cliente ? reserva.cliente.name : reserva.nombre_cliente}</Text>
+            {/* <Text>Agenda: {reserva.agenda_id}</Text> */}
             <Text>Fecha: {reserva.fecha}</Text>
             <Text>Hora: {reserva.hora}</Text>
             <Text>Duración: {reserva.duracion} min</Text>

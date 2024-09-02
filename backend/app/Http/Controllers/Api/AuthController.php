@@ -521,7 +521,58 @@ class AuthController extends Controller
 
     //     return response()->json(['message' => 'Cliente actualizado correctamente', 'cliente' => $cliente], 200);
     // }
+    public function updateClienteApp(Request $request, $id)
+    {
+        // Definir las reglas de validación
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|required|string|min:3|max:255',
+            'email' => 'sometimes|required|string|email|max:255|unique:clientes,email,' . $id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'password_confirmation' => 'nullable|string|same:password|min:8',
+            'cellphone' => 'nullable|string|min:8|max:20|regex:/^[0-9]+$/|unique:clientes,cellphone,' . $id,
+        ], [
+            'name.required' => 'El campo nombre es obligatorio.',
+            'email.required' => 'El campo correo electrónico es obligatorio.',
+            'email.email' => 'El campo correo electrónico debe ser una dirección de correo válida.',
+            'email.unique' => 'El correo electrónico ya está en uso.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
+            'cellphone.unique' => 'El teléfono ya está en uso.',
+        ]);
 
+        // Si la validación falla, retornar los errores
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        // Buscar al cliente por ID
+        $cliente = Cliente::findOrFail($id);
+
+        // Actualizar los campos solo si están presentes en la solicitud
+        if ($request->filled('name')) {
+            $cliente->name = $request->name;
+        }
+
+        if ($request->filled('email')) {
+            $cliente->email = $request->email;
+        }
+
+        if ($request->filled('password')) {
+            $cliente->password = Hash::make($request->password);
+        }
+
+        if ($request->filled('cellphone')) {
+            $cliente->cellphone = $request->cellphone;
+        }
+
+        // Guardar los cambios
+        $cliente->save();
+
+        // Retornar una respuesta exitosa con los datos del cliente actualizado
+        return response()->json(['message' => 'Cliente actualizado correctamente', 'cliente' => $cliente], 200);
+    }
 
     public function updateCliente(Request $request, $id)
     {
@@ -966,6 +1017,147 @@ class AuthController extends Controller
         return response()->json(['message' => 'Empresa actualizada correctamente', 'empresa' => $empresa], 200);
     }
     
+    public function updateEmpresaapp(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|required|string|min:3|max:255',
+            'email' => 'sometimes|required|string|email|max:255|unique:empresas,email,' . $id . '|unique:clientes,email,' . $id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'confirmPassword' => 'nullable|string|same:password|min:8',
+            'cellphone' => 'nullable|string|min:8|max:20|regex:/^[0-9]+$/|unique:empresas,cellphone,' . $id . '|unique:clientes,cellphone,' . $id,
+            'address' => 'sometimes|required|string|max:255',
+            'categoria_id' => 'sometimes|required|exists:categorias,id',
+            'departamento_id' => 'sometimes|required|exists:departamentos,id',
+            'ciudad_id' => [
+                'sometimes',
+                'required',
+                function ($attribute, $value, $fail) use ($request) {
+                    $departamentoId = $request->input('departamento_id');
+                    if (!DB::table('ciudades')
+                            ->where('id', $value)
+                            ->where('departamento_id', $departamentoId)
+                            ->exists()) {
+                        $fail('La ciudad seleccionada no pertenece al departamento elegido.');
+                    }
+                },
+            ],
+            'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'url' => 'sometimes|required|string|max:255|unique:empresas,url,' . $id,
+        ], [
+            'name.required' => 'El campo nombre es obligatorio.',
+            'name.string' => 'El campo nombre debe ser una cadena de texto.',
+            'name.min' => 'El campo nombre debe tener al menos 3 caracteres.',
+            'name.max' => 'El campo nombre no debe exceder los 255 caracteres.',
+    
+            'email.required' => 'El campo correo electrónico es obligatorio.',
+            'email.string' => 'El campo correo electrónico debe ser una cadena de texto.',
+            'email.email' => 'El campo correo electrónico debe ser una dirección de correo válida.',
+            'email.max' => 'El campo correo electrónico no debe exceder los 255 caracteres.',
+            'email.unique' => 'El correo electrónico ya está en uso.',
+    
+            'password.string' => 'El campo contraseña debe ser una cadena de texto.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
+            'confirmPassword.same' => 'La confirmación de contraseña no coincide con la contraseña.',
+    
+            'cellphone.string' => 'El campo teléfono debe ser una cadena de texto.',
+            'cellphone.regex' => 'El teléfono solo debe contener números.',
+            'cellphone.min' => 'El campo teléfono debe tener al menos 8 caracteres.',
+            'cellphone.max' => 'El campo teléfono no debe exceder los 20 caracteres.',
+            'cellphone.unique' => 'El teléfono ya está en uso.',
+    
+            'address.required' => 'El campo dirección es obligatorio.',
+            'address.string' => 'El campo dirección debe ser una cadena de texto.',
+            'address.max' => 'El campo dirección no debe exceder los 255 caracteres.',
+    
+            'categoria_id.required' => 'El campo categoría es obligatorio.',
+            'categoria_id.exists' => 'La categoría seleccionada no es válida.',
+    
+            'departamento_id.required' => 'El campo departamento es obligatorio.',
+            'departamento_id.exists' => 'El departamento seleccionado no es válido.',
+    
+            'ciudad_id.required' => 'El campo ciudad es obligatorio.',
+            'ciudad_id.exists' => 'La ciudad seleccionada no es válida.',
+    
+            'profile_picture.image' => 'El archivo debe ser una imagen.',
+            'profile_picture.mimes' => 'La imagen debe ser de tipo: jpeg, png, jpg, gif, o svg.',
+            'profile_picture.max' => 'La imagen no debe exceder los 2MB.',
+    
+            'url.required' => 'El campo URL es obligatorio.',
+            'url.string' => 'El campo URL debe ser una cadena de texto.',
+            'url.max' => 'El campo URL no debe exceder los 255 caracteres.',
+            'url.unique' => 'La URL ya está en uso.',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 400);
+        }
+    
+        $empresa = Empresa::findOrFail($id);
+    
+        if ($request->filled('password') && Hash::check($request->password, $empresa->password)) {
+            return response()->json([
+                'errors' => ['password' => ['La nueva contraseña no puede ser la misma que la contraseña actual.']]
+            ], 422);
+        }
+    
+        if ($request->filled('name')) {
+            $empresa->name = $request->name;
+        }
+    
+        if ($request->filled('email')) {
+            $empresa->email = $request->email;
+        }
+    
+        if ($request->filled('password')) {
+            $empresa->password = Hash::make($request->password);
+        }
+    
+        if ($request->has('remove_cellphone') && $request->remove_cellphone) {
+            $empresa->cellphone = null;
+        } elseif ($request->filled('cellphone')) {
+            $empresa->cellphone = $request->cellphone;
+        }
+    
+        if ($request->filled('address')) {
+            $empresa->address = $request->address;
+        }
+    
+        if ($request->filled('categoria_id')) {
+            $empresa->categoria_id = $request->categoria_id;
+        }
+    
+        if ($request->filled('departamento_id')) {
+            $empresa->departamento_id = $request->departamento_id;
+        }
+    
+        if ($request->filled('ciudad_id')) {
+            $empresa->ciudad_id = $request->ciudad_id;
+        }
+    
+        if ($request->has('remove_picture') && $request->remove_picture) {
+            if ($empresa->profile_picture) {
+                Storage::delete($empresa->profile_picture);
+                $empresa->profile_picture = null;
+            }
+        } elseif ($request->hasFile('profile_picture')) {
+            $image = $request->file('profile_picture');
+            $name = time() . '.' . $image->getClientOriginalExtension();
+            $destinationPath = public_path('/profile_pictures');
+            $image->move($destinationPath, $name);
+            $empresa->profile_picture = '/profile_pictures/' . $name;
+        }
+    
+        if ($request->filled('url')) {
+            $empresa->url = $request->url;
+        }
+    
+        $empresa->save();
+    
+        return response()->json(['message' => 'Empresa actualizada correctamente', 'empresa' => $empresa], 200);
+    }
 
 
 

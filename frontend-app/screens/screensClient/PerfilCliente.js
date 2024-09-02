@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserContext } from "../../contexts/UserContext";
+import Config from "../Config";
 
 const PerfilCliente = ({ navigation }) => {
   const { user, logout } = useContext(UserContext);
@@ -19,7 +20,10 @@ const PerfilCliente = ({ navigation }) => {
       <View style={styles.profileContainer}>
         <Image
           source={{
-            uri: user.profile_picture || "https://via.placeholder.com/150",
+            // uri: user.profile_picture || "https://via.placeholder.com/150",
+            uri: user.profile_picture
+            ? `${Config.urlFoto()}${user.profile_picture}`
+            : "https://via.placeholder.com/150",
           }}
           style={styles.profileImage}
         />
@@ -40,13 +44,13 @@ const PerfilCliente = ({ navigation }) => {
         </View>
       </View>
       <View style={styles.profileContainerBotones}>
-        {/* <TouchableOpacity
+        <TouchableOpacity
           style={styles.editButton}
           onPress={() => navigation.navigate("EditarCliente")}
         >
           <Icon name="pencil-outline" size={20} color="#fff" />
           <Text style={styles.editButtonText}>Editar Perfil</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
         <TouchableOpacity
           style={styles.reservationsButton}
           onPress={() => navigation.navigate("MisReservas")}
@@ -54,10 +58,21 @@ const PerfilCliente = ({ navigation }) => {
           <Icon name="calendar-outline" size={20} color="#fff" />
           <Text style={styles.reservationsButtonText}>Mis Reservas</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.settingsButton} onPress={() => navigation.navigate("Configuraciones")}>
+
+        {/* <TouchableOpacity style={styles.settingsButton} onPress={() => navigation.navigate("Configuraciones")}>
           <Icon name="settings-outline" size={20} color="#fff" />
           <Text style={styles.settingsButtonText}>Configuraciones</Text>
+        </TouchableOpacity> */}
+
+        <TouchableOpacity
+          style={styles.settingsButton}
+          onPress={() => navigation.navigate("MisCompras")}
+        >
+          <Icon name="cart-outline" size={20} color="#fff" />
+          <Text style={styles.settingsButtonText}>Mis Compras</Text>
         </TouchableOpacity>
+
+
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Icon name="log-out-outline" size={20} color="#fff" />
           <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>

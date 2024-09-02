@@ -25,8 +25,8 @@ const GestionClientes = ({ navigation }) => {
 
   useEffect(() => {
     if (user && user.role === "empresa") {
+      obtenerServicios(); 
       obtenerClientes();
-      obtenerServicios(); // Obtener los servicios de la empresa
     }
   }, []);
 
@@ -92,19 +92,27 @@ const GestionClientes = ({ navigation }) => {
     setModalVisible(false);
   };
 
+ 
   const obtenerNombreServicio = (serviciosArray) => {
     try {
-      const servicioIds = JSON.parse(serviciosArray);
-      const nombresServicios = servicioIds.map((id) => {
-        const servicio = servicios.find((s) => s.id === id);
+      // Primero verifica si serviciosArray es realmente un array
+      if (!Array.isArray(serviciosArray)) {
+        console.error("serviciosArray no es un array:", serviciosArray);
+        return "Servicio no especificado";
+      }
+  
+      // Suponiendo que serviciosArray es un array de objetos con una propiedad 'id'
+      const nombresServicios = serviciosArray.map((item) => {
+        const servicio = servicios.find((s) => s.id === item.id);
         return servicio ? servicio.nombre : "Servicio no especificado";
       });
+  
       return nombresServicios.join(", ");
     } catch (e) {
+      console.error("Error en obtenerNombreServicios:", e);
       return "Servicio no especificado";
     }
   };
-
   const handleBack = () => {
     navigation.goBack();
   };
@@ -113,7 +121,7 @@ const GestionClientes = ({ navigation }) => {
     <View style={styles.container}>
       <BotonVolver onBack={handleBack} />
       <Text style={styles.title}>Gestión de Clientes</Text>
-      {error && <Text style={styles.error}>{error}</Text>}
+      {/* {error && <Text style={styles.error}>{error}</Text>} */}
       <FlatList
         data={clientes}
         keyExtractor={(item) => item.id.toString()}

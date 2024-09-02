@@ -8,17 +8,15 @@ import {
   Alert,
 } from "react-native";
 import axios from "axios";
-
 import { UserContext } from "../../contexts/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import BotonCancelar from "../components/BotonCancelar";
 
-
 const EditClientScreen = ({ navigation }) => {
-  const user = useContext(UserContext).user;
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [cellphone, setCellphone] = useState("");
+  const { user, setUser } = useContext(UserContext);
+  const [name, setName] = useState(user.name || "");
+  const [email, setEmail] = useState(user.email || "");
+  const [cellphone, setCellphone] = useState(user.cellphone || "");
   const [password, setPassword] = useState("");
   const [password_confirmation, setPassword_confirmation] = useState("");
   const [errors, setErrors] = useState({});
@@ -78,6 +76,10 @@ const EditClientScreen = ({ navigation }) => {
           },
         }
       );
+
+      // Actualizar el estado del usuario en UserContext
+      setUser(response.data.cliente);  // Actualizar el contexto con los datos actualizados del cliente
+
       Alert.alert(
         "Cliente actualizado",
         "Los datos del cliente han sido actualizados correctamente."
@@ -154,7 +156,6 @@ const EditClientScreen = ({ navigation }) => {
         <Text style={styles.buttonText}>Guardar cambios</Text>
       </TouchableOpacity>
       <BotonCancelar onCancel={handleCancel} />
-
     </View>
   );
 };

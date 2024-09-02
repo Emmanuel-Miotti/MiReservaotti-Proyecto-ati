@@ -19,10 +19,10 @@ const Home = ({ navigation }) => {
   const [categorias, setCategorias] = useState({});
   const [departamentos, setDepartamentos] = useState([]);
   const [ciudades, setCiudades] = useState([]);
-  const [searchText, setSearchText] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedDepartamento, setSelectedDepartamento] = useState('');
-  const [selectedCiudad, setSelectedCiudad] = useState('');
+  const [searchText, setSearchText] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedDepartamento, setSelectedDepartamento] = useState("");
+  const [selectedCiudad, setSelectedCiudad] = useState("");
 
   useEffect(() => {
     obtenerEmpresas();
@@ -33,6 +33,7 @@ const Home = ({ navigation }) => {
   const obtenerEmpresas = async () => {
     try {
       const response = await axios.get(`${Config.url()}/empresas`);
+      console.log(response.data);
       setEmpresas(response.data.data);
     } catch (error) {
       console.error("Error al cargar empresas:", error);
@@ -63,9 +64,11 @@ const Home = ({ navigation }) => {
 
   const handleDepartamentoChange = async (value) => {
     setSelectedDepartamento(value);
-    setSelectedCiudad(''); 
+    setSelectedCiudad("");
     try {
-      const response = await axios.get(`${Config.url()}/departamento/ciudades/${value}`);
+      const response = await axios.get(
+        `${Config.url()}/departamento/ciudades/${value}`
+      );
       setCiudades(response.data);
     } catch (error) {
       console.error("Error al cargar las ciudades:", error);
@@ -75,18 +78,30 @@ const Home = ({ navigation }) => {
   const defaultImage = "https://via.placeholder.com/150";
 
   const filteredEmpresas = empresas.filter((empresa) => {
-    const matchesSearchText = empresa.name.toLowerCase().includes(searchText.toLowerCase());
-    const matchesCategory = selectedCategory === '' || empresa.categoria_id === parseInt(selectedCategory);
-    const matchesDepartamento = selectedDepartamento === '' || empresa.departamento_id === parseInt(selectedDepartamento);
-    const matchesCiudad = selectedCiudad === '' || empresa.ciudad_id === parseInt(selectedCiudad);
-    return matchesSearchText && matchesCategory && matchesDepartamento && matchesCiudad;
+    const matchesSearchText = empresa.name
+      .toLowerCase()
+      .includes(searchText.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "" ||
+      empresa.categoria_id === parseInt(selectedCategory);
+    const matchesDepartamento =
+      selectedDepartamento === "" ||
+      empresa.departamento_id === parseInt(selectedDepartamento);
+    const matchesCiudad =
+      selectedCiudad === "" || empresa.ciudad_id === parseInt(selectedCiudad);
+    return (
+      matchesSearchText &&
+      matchesCategory &&
+      matchesDepartamento &&
+      matchesCiudad
+    );
   });
 
   const handleClearFilters = () => {
-    setSearchText('');
-    setSelectedCategory('');
-    setSelectedDepartamento('');
-    setSelectedCiudad('');
+    setSearchText("");
+    setSelectedCategory("");
+    setSelectedDepartamento("");
+    setSelectedCiudad("");
   };
 
   return (
@@ -135,7 +150,9 @@ const Home = ({ navigation }) => {
       <Text style={styles.listTitle}>Listado de empresas:</Text>
       <ScrollView>
         {filteredEmpresas.length === 0 ? (
-          <Text style={styles.noEmpresasText}>No hay empresas disponibles.</Text>
+          <Text style={styles.noEmpresasText}>
+            No hay empresas disponibles.
+          </Text>
         ) : (
           filteredEmpresas.map((item) => (
             <Pressable
@@ -146,7 +163,11 @@ const Home = ({ navigation }) => {
               }
             >
               <Image
-                source={{ uri: item.image || defaultImage }}
+                source={{
+                  uri: item.profile_picture
+                    ? `${Config.urlFoto()}${item.profile_picture}`
+                    : defaultImage,
+                }}
                 style={styles.image}
               />
               <View style={styles.cardContent}>
@@ -186,13 +207,13 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     height: 45,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 15,
     borderRadius: 25,
-    backgroundColor: '#fff',
-    shadowColor: '#000',
+    backgroundColor: "#fff",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
@@ -201,30 +222,30 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     marginBottom: 15,
-    backgroundColor: '#fff',
-    borderColor: '#ccc',
+    backgroundColor: "#fff",
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 25,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 4,
   },
   clearButton: {
-    backgroundColor: '#34a853',
+    backgroundColor: "#34a853",
     padding: 12,
     borderRadius: 25,
     marginBottom: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 4,
   },
   clearButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -261,15 +282,14 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   noEmpresasText: {
-    textAlign: 'center',
-    color: '#888',
+    textAlign: "center",
+    color: "#888",
     marginTop: 20,
     fontSize: 16,
   },
 });
 
 export default Home;
-
 
 // import React, { useState, useEffect, useContext } from "react";
 // import {
@@ -292,7 +312,6 @@ export default Home;
 //   const [categorias, setCategorias] = useState({});
 //   const [searchText, setSearchText] = useState('');
 //   const [selectedCategory, setSelectedCategory] = useState('');
-
 
 //   useEffect(() => {
 //     obtenerEmpresas();

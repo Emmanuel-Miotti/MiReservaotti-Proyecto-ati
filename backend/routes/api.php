@@ -57,6 +57,7 @@ Route::prefix('v1')->group(function () {
     // Otras rutas públicas o específicas de empresa aquí...
     // Route::middleware('auth:sanctum')->group(function () {
         Route::post('/empresa/{id}', [AuthController::class, 'updateEmpresa']);
+        Route::put('/empresa/{id}', [AuthController::class, 'updateEmpresaapp']);
         // Route::get('/empresa/{id}', [UserController::class, 'getEmpresaById']);
 
     // });
@@ -75,6 +76,7 @@ Route::prefix('v1')->group(function () {
     //------------------------ CLIENTE   ------------------------
 
     Route::post('/cliente/{id}', [AuthController::class, 'updateCliente']);
+    Route::put('/cliente/{id}', [AuthController::class, 'updateClienteApp']);
 
     //------------------------    ------------------------
     Route::post('/categoria', [EmpresaController::class, 'crearCategoria']);

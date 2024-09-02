@@ -12,11 +12,12 @@ import {
   MdOutlineBusinessCenter,
   MdOutlineLocationOn,
   MdOutlineCall,
-    // MdOutlineLocationOn,
+  // MdOutlineLocationOn,
   MdOutlineLocationCity,
 } from "react-icons/md";
 import "../../css/Login.css";
 import axios from "axios";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const RegisterEmpresa = () => {
   const { getToken } = AuthUser();
@@ -28,7 +29,7 @@ const RegisterEmpresa = () => {
   const [url, setUrl] = useState("");
   const [address, setAddress] = useState("");
   const [categoria_id, setCategory] = useState("");
-  const [profilePicture, setProfilePicture] = useState(null); 
+  const [profilePicture, setProfilePicture] = useState(null);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const [departamento_id, setDepartamentoId] = useState("");
@@ -36,6 +37,7 @@ const RegisterEmpresa = () => {
   const [departamentos, setDepartamentos] = useState([]);
   const [ciudades, setCiudades] = useState([]);
   const [categorias, setCategorias] = useState({});
+  const [recaptchaValue, setRecaptchaValue] = useState(null);
 
   useEffect(() => {
     if (getToken()) {
@@ -60,6 +62,11 @@ const RegisterEmpresa = () => {
   const submitRegistro = async (e) => {
     e.preventDefault();
 
+    if (!recaptchaValue) {
+      setErrors({ recaptcha: "Por favor, verifica que no eres un robot." });
+      return;
+    }
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
@@ -75,7 +82,7 @@ const RegisterEmpresa = () => {
       formData.append("profile_picture", profilePicture);
     }
 
-    console.log(formData)
+    console.log(formData);
 
     try {
       await Config.registerEmpresa(formData, {
@@ -109,20 +116,25 @@ const RegisterEmpresa = () => {
     }
   };
 
+  function onChange(value) {
+    // console.log("Captcha value:", value);
+    setRecaptchaValue(value);
+  }
+
   const obtenerCategorias = async () => {
     try {
-        const response = await axios.get(`${Config.url()}/categorias`);
-        console.log("Categorías:", response.data); // Verifica los datos recibidos
-        const categoriasMap = {};
-        response.data.forEach((cat) => {
-            categoriasMap[cat.id] = cat.name;
-        });
-        console.log("Mapeo de categorías:", categoriasMap); // Verifica el mapeo
-        setCategorias(categoriasMap); // Accede al array de categorías correctamente
+      const response = await axios.get(`${Config.url()}/categorias`);
+      console.log("Categorías:", response.data); // Verifica los datos recibidos
+      const categoriasMap = {};
+      response.data.forEach((cat) => {
+        categoriasMap[cat.id] = cat.name;
+      });
+      console.log("Mapeo de categorías:", categoriasMap); // Verifica el mapeo
+      setCategorias(categoriasMap); // Accede al array de categorías correctamente
     } catch (error) {
-        console.error("Error al cargar categorías:", error);
+      console.error("Error al cargar categorías:", error);
     }
-};
+  };
 
   const fetchDepartamentos = async () => {
     try {
@@ -276,61 +288,55 @@ const RegisterEmpresa = () => {
                 </Form.Control.Feedback>
               </InputGroup>
 
-
-
-
               <Form.Label htmlFor="basic-url">Departamento *</Form.Label>
-<InputGroup className="mb-1">
-  <InputGroup.Text id="basic-addon1">
-    <MdOutlineLocationCity />
-  </InputGroup.Text>
-  <Form.Select
-    aria-label="Selecciona tu departamento"
-    value={departamento_id}
-    onChange={handleDepartamentoChange}
-    required
-    isInvalid={!!errors.departamento_id}
-  >
-    <option value="">Selecciona tu departamento</option>
-    {departamentos.map((departamento) => (
-      <option key={departamento.id} value={departamento.id}>
-        {departamento.name}
-      </option>
-    ))}
-  </Form.Select>
-  <Form.Control.Feedback type="invalid">
-    {errors.departamento_id}
-  </Form.Control.Feedback>
-</InputGroup>
+              <InputGroup className="mb-1">
+                <InputGroup.Text id="basic-addon1">
+                  <MdOutlineLocationCity />
+                </InputGroup.Text>
+                <Form.Select
+                  aria-label="Selecciona tu departamento"
+                  value={departamento_id}
+                  onChange={handleDepartamentoChange}
+                  required
+                  isInvalid={!!errors.departamento_id}
+                >
+                  <option value="">Selecciona tu departamento</option>
+                  {departamentos.map((departamento) => (
+                    <option key={departamento.id} value={departamento.id}>
+                      {departamento.name}
+                    </option>
+                  ))}
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  {errors.departamento_id}
+                </Form.Control.Feedback>
+              </InputGroup>
 
-<Form.Label htmlFor="basic-url" className="mt-3">
-  Ciudad *
-</Form.Label>
-<InputGroup className="mb-1">
-  <InputGroup.Text id="basic-addon1">
-    <MdOutlineLocationOn />
-  </InputGroup.Text>
-  <Form.Select
-    aria-label="Selecciona tu ciudad"
-    value={ciudad_id}
-    onChange={(e) => setCiudadId(e.target.value)}
-    required
-    isInvalid={!!errors.ciudad_id}
-  >
-    <option value="">Selecciona tu ciudad</option>
-    {ciudades.map((ciudad) => (
-      <option key={ciudad.id} value={ciudad.id}>
-        {ciudad.name}
-      </option>
-    ))}
-  </Form.Select>
-  <Form.Control.Feedback type="invalid">
-    {errors.ciudad_id}
-  </Form.Control.Feedback>
-</InputGroup>
-
-
-
+              <Form.Label htmlFor="basic-url" className="mt-3">
+                Ciudad *
+              </Form.Label>
+              <InputGroup className="mb-1">
+                <InputGroup.Text id="basic-addon1">
+                  <MdOutlineLocationOn />
+                </InputGroup.Text>
+                <Form.Select
+                  aria-label="Selecciona tu ciudad"
+                  value={ciudad_id}
+                  onChange={(e) => setCiudadId(e.target.value)}
+                  required
+                  isInvalid={!!errors.ciudad_id}
+                >
+                  <option value="">Selecciona tu ciudad</option>
+                  {ciudades.map((ciudad) => (
+                    <option key={ciudad.id} value={ciudad.id}>
+                      {ciudad.name}
+                    </option>
+                  ))}
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  {errors.ciudad_id}
+                </Form.Control.Feedback>
+              </InputGroup>
 
               <Form.Label htmlFor="basic-url" className="mt-3">
                 Dirección * (Lo mejor detallada para encontrarla en google maps)
@@ -353,10 +359,6 @@ const RegisterEmpresa = () => {
                 </Form.Control.Feedback>
               </InputGroup>
 
-
-
-
-
               <Form.Label htmlFor="basic-url">Categoría *</Form.Label>
               <InputGroup className="mb-4">
                 <InputGroup.Text id="basic-addon1">
@@ -366,35 +368,30 @@ const RegisterEmpresa = () => {
                   controlId="floatingSelectGrid"
                   // label=" ¿Qué tipo de negocio tienes?"
                 > */}
-                  <Form.Select
-                    aria-label="Floating label select example"
-                    value={categoria_id}
-                    onChange={(e) => setCategory(e.target.value)}
-                    required
-                    isInvalid={!!errors.categoria_id}
-                  >
+                <Form.Select
+                  aria-label="Floating label select example"
+                  value={categoria_id}
+                  onChange={(e) => setCategory(e.target.value)}
+                  required
+                  isInvalid={!!errors.categoria_id}
+                >
                   <option value="">¿Qué tipo de negocio tienes?</option>
-                                  {Object.keys(categorias).map((key) => (
+                  {Object.keys(categorias).map((key) => (
                     <option key={key} value={key}>
-                        {categorias[key]}
+                      {categorias[key]}
                     </option>
-                ))}
-                    {/* <option value="">Selecciona tu tipo de negocio</option>
+                  ))}
+                  {/* <option value="">Selecciona tu tipo de negocio</option>
                     <option value="1">Barbería</option>
                     <option value="2">Centro de Estética</option>
                     <option value="3">Centro Deportivo</option>
                     <option value="Otro">Otro</option> */}
-                  </Form.Select>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.categoria_id}
-                  </Form.Control.Feedback>
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  {errors.categoria_id}
+                </Form.Control.Feedback>
                 {/* </FloatingLabel> */}
               </InputGroup>
-
-
-
-
-
 
               <Form.Label htmlFor="basic-url">URL *</Form.Label>
               <InputGroup className="mb-4">
@@ -414,11 +411,27 @@ const RegisterEmpresa = () => {
                 </Form.Control.Feedback>
               </InputGroup>
 
-              <div className="d-grid">
+
+              <div className="d-grid justify-content-center mt-3">
+                  <ReCAPTCHA
+                    sitekey="6LcjHDQqAAAAANBrjPiy0KBM80oI7Fd6pb_IlaDO"
+                    onChange={onChange}
+                  />
+                  {errors.recaptcha && (
+                     <div className="invalid-feedback d-block text-center">
+                      {errors.recaptcha}
+                    </div>
+                  )}
+                </div>
+
+
+                <div className="d-grid mt-3">
                 <button onClick={submitRegistro} className="btn btn-success">
                   Crear cuenta
                 </button>
               </div>
+
+
               <hr />
               <p className="auth-card-footer text-center">
                 {" "}

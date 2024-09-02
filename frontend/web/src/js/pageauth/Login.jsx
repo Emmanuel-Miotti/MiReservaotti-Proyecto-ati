@@ -8,11 +8,13 @@ import InputGroup from "react-bootstrap/InputGroup";
 import { MdOutlineEmail } from "react-icons/md";
 import { IoKeyOutline } from "react-icons/io5";
 import "../../css/Login.css";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Login = () => {
   const { getToken } = AuthUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [recaptchaValue, setRecaptchaValue] = useState(null);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
@@ -38,10 +40,16 @@ const Login = () => {
   const submitLogin = async (e) => {
     e.preventDefault();
 
+    if (!recaptchaValue) {
+      setErrors({ recaptcha: "Por favor, verifica que no eres un robot." });
+      return;
+    }
+
     try {
       const response = await Config.login({
         email,
         password,
+        recaptchaValue,
       });
 
       const data = response.data;
@@ -61,13 +69,17 @@ const Login = () => {
       }
     } catch (error) {
       if (error.response) {
-
         const { data } = error.response;
-        console.log(data)
+        console.log(data);
         setErrors(data.errors || {});
       }
     }
   };
+
+  function onChange(value) {
+    // console.log("Captcha value:", value);
+    setRecaptchaValue(value);
+  }
 
   return (
     <div className="auth-card-container">
@@ -119,7 +131,20 @@ const Login = () => {
                     {errors.password}
                   </Form.Control.Feedback>
                 </InputGroup>
-                <div className="d-grid">
+
+                <div className="d-grid justify-content-center mt-3">
+                  <ReCAPTCHA
+                    sitekey="6LcjHDQqAAAAANBrjPiy0KBM80oI7Fd6pb_IlaDO"
+                    onChange={onChange}
+                  />
+                  {errors.recaptcha && (
+                   <div className="invalid-feedback d-block text-center">
+                      {errors.recaptcha}
+                    </div>
+                  )}
+                </div>
+
+                <div className="d-grid mt-3">
                   <button type="submit" className="btn btn-success">
                     Iniciar sesión
                   </button>
@@ -145,4 +170,3 @@ const Login = () => {
 };
 
 export default Login;
-

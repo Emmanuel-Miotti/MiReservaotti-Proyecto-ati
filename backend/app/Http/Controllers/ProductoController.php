@@ -134,6 +134,7 @@ class ProductoController extends Controller
     try {
         $productos = Producto::where('empresa_id', $empresa_id)
             ->where('estado', 'activo')  // Filtra solo los productos activos
+            ->where('stock', '>', 0)
             ->get()
             ->map(function ($producto) {
                 $producto->foto_url = $producto->foto ? Storage::url($producto->foto) : null;

@@ -132,10 +132,10 @@ const MisReservas = () => {
         ) : (
           reservasProximas.map((item) => (
             <View key={item.id} style={styles.card}>
-              <Image
+              {/* <Image
                 source={{ uri: item.image || defaultImage }}
                 style={styles.image}
-              />
+              /> */}
               <View style={styles.cardContent}>
                 <Text style={styles.cardTitle}>{item.name}</Text>
                 <Text style={styles.cardInfo}>Fecha: {item.fecha}</Text>
@@ -163,10 +163,10 @@ const MisReservas = () => {
         ) : (
           reservasPasadas.map((item) => (
             <View key={item.id} style={styles.card}>
-              <Image
+              {/* <Image
                 source={{ uri: item.image || defaultImage }}
                 style={styles.image}
-              />
+              /> */}
               <View style={styles.cardContent}>
                 <Text style={styles.cardTitle}>{item.name}</Text>
                 <Text style={styles.cardInfo}>Fecha: {item.fecha}</Text>

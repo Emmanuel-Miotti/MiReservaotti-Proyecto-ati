@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity, Linking } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { UserContext } from "../../contexts/UserContext";
+import Config from "../Config";
 
 const PanelPerfil = ({ navigation }) => {
   const { user, logout } = useContext(UserContext);
@@ -25,7 +26,9 @@ const PanelPerfil = ({ navigation }) => {
       <View style={styles.profileContainer}>
         <Image
           source={{
-            uri: user.profile_picture || "https://via.placeholder.com/150",
+            uri: user.profile_picture
+            ? `${Config.urlFoto()}${user.profile_picture}`
+            : "https://via.placeholder.com/150",
           }}
           style={styles.profileImage}
         />
